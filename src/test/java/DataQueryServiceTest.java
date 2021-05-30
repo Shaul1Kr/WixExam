@@ -6,7 +6,7 @@ import service.DataQueryServiceImpl;
 
 import java.util.Arrays;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.*;
 
 public class DataQueryServiceTest {
 
@@ -59,7 +59,6 @@ public class DataQueryServiceTest {
         dataQueryService.save(item1);
         dataQueryService.save(item2);
         assertEquals(true, dataQueryService.query("GREATER_THAN(views,41)").contains(item2));
-
     }
 
     @Test
@@ -98,5 +97,97 @@ public class DataQueryServiceTest {
     @Test(expected = QueryParseException.class)
     public void ReturnErrorWhenInvalidQueryPassed() throws Exception {
         dataQueryService.query("INVALID");
+    }
+
+    @Test
+    public void FilterItemBaseOnComplexNANDQueryString() throws Exception {
+        Item item1 = (Item) templateItem.clone();
+        item1.setId("id1");
+        Item item2 = (Item) templateItem.clone();
+        item2.setId("id2");
+        Item item3 = (Item) templateItem.clone();
+        item3.setId("id3");
+
+
+        dataQueryService.save(item1);
+        dataQueryService.save(item2);
+        dataQueryService.save(item3);
+        assertTrue(dataQueryService.query("NOT(AND(EQUAL(id,\"id1\"),EQUAL(id,\"id2\")))").containsAll(Arrays.asList(item1, item2, item3)));
+    }
+
+    @Test
+    public void FilterItemBaseOnComplexNORQueryString() throws Exception {
+        Item item1 = (Item) templateItem.clone();
+        item1.setId("id1");
+        Item item2 = (Item) templateItem.clone();
+        item2.setId("id2");
+        Item item3 = (Item) templateItem.clone();
+        item3.setId("id3");
+
+
+        dataQueryService.save(item1);
+        dataQueryService.save(item2);
+        dataQueryService.save(item3);
+        assertTrue(dataQueryService.query("NOT(OR(EQUAL(id,\"id1\"),EQUAL(id,\"id2\")))").containsAll(Arrays.asList(item3)));
+    }
+
+    @Test
+    public void FilterItemBaseOnComplexNORFalseQueryString() throws Exception {
+        Item item1 = (Item) templateItem.clone();
+        item1.setId("id1");
+        Item item2 = (Item) templateItem.clone();
+        item2.setId("id2");
+        Item item3 = (Item) templateItem.clone();
+        item3.setId("id3");
+
+
+        dataQueryService.save(item1);
+        dataQueryService.save(item2);
+        dataQueryService.save(item3);
+        assertFalse(dataQueryService.query("NOT(OR(EQUAL(id,\"id1\"),EQUAL(id,\"id2\")))").containsAll(Arrays.asList(item1, item2)));
+    }
+
+    @Test
+    public void FilterItemBaseOnComplexNORFalseQueryString2() throws Exception {
+        Item item1 = (Item) templateItem.clone();
+        item1.setId("id1");
+        Item item2 = (Item) templateItem.clone();
+        item2.setId("id2");
+        Item item3 = (Item) templateItem.clone();
+        item3.setId("id3");
+
+
+        dataQueryService.save(item1);
+        dataQueryService.save(item2);
+        dataQueryService.save(item3);
+        assertNull(dataQueryService.query("NOT(OR(OR(EQUAL(id,\"id1\"),EQUAL(id,\"id2\")),EQUAL(id,\"id3\"))))"));
+    }
+
+    @Test
+    public void FilterItemBaseOnComplexNotGreaterThanFilter() throws Exception {
+        Item item1 = (Item) templateItem.clone();
+        item1.setId("id1");
+        item1.setViews(41);
+        Item item2 = (Item) templateItem.clone();
+        item2.setId("id2");
+        item2.setViews(50);
+
+        dataQueryService.save(item1);
+        dataQueryService.save(item2);
+        assertTrue(dataQueryService.query("NOT(GREATER_THAN(views,41))").contains(item1));
+    }
+
+    @Test
+    public void FilterItemBaseOnComplexNotLessThanFilter() throws Exception {
+        Item item1 = (Item) templateItem.clone();
+        item1.setId("id1");
+        item1.setViews(41);
+        Item item2 = (Item) templateItem.clone();
+        item2.setId("id2");
+        item2.setViews(50);
+
+        dataQueryService.save(item1);
+        dataQueryService.save(item2);
+        assertEquals(true, dataQueryService.query("NOT(LESS_THAN(views,42))").contains(item2));
     }
 }

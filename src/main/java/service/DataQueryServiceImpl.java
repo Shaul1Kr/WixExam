@@ -30,7 +30,7 @@ public class DataQueryServiceImpl implements DataQueryService {
             else if(matcher.group(1).equals("LESS_THAN"))
                 return LessThan(property, value);
             else
-                throw new QueryParseException("Invalid query", null);
+                throw new QueryParseException("Invalid query33", null);
         }
         Pattern aoPattern = Pattern.compile("^(AND|OR)\\((.*)\\)");
         Matcher aoMatcher = aoPattern.matcher(query);
@@ -60,20 +60,20 @@ public class DataQueryServiceImpl implements DataQueryService {
                         return Union(arg1,arg2);
                     }
                     else
-                        throw new QueryParseException("Invalid query", null);
+                        throw new QueryParseException("Invalid query63", null);
                 }
                 else
-                    throw new QueryParseException("Invalid query", null);
+                    throw new QueryParseException("Invalid query66", null);
             }
             else
                 throw new QueryParseException("Invalid query", null);
         }
-        Pattern notPattern = Pattern.compile("^NOT\\((.*?)\\)");
+        Pattern notPattern = Pattern.compile("^NOT\\((.*)\\)");
         Matcher notMatcher = notPattern.matcher(query);
         if(notMatcher.find()){
             return Complement(notMatcher.group(1));
         }
-        throw new QueryParseException("Invalid query", null);
+        throw new QueryParseException("Invalid query76", null);
 
     }
 
@@ -213,8 +213,9 @@ public class DataQueryServiceImpl implements DataQueryService {
             itemValue.removeAll(listA);
             return itemValue;
         }
-        catch(Exception e) {
-            throw new QueryParseException("Invalid query", null);
+        catch(QueryParseException e) {
+            System.out.println(e);
+            return null;
         }
     }
 

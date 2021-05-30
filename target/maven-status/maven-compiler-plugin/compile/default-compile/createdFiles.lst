@@ -1,5 +1,0 @@
-api\DataQueryService.class
-api\Item.class
-api\NoDataFound.class
-service\DataQueryServiceImpl.class
-api\QueryParseException.class
