@@ -9,6 +9,7 @@ import java.util.stream.Collectors;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import api.NoDataFound;
 import api.QueryParseException;
 
 public class DataQueryServiceImpl implements DataQueryService {
@@ -37,6 +38,7 @@ public class DataQueryServiceImpl implements DataQueryService {
             String functionArgs = aoMatcher.group(2);
             Pattern firstBracketP = Pattern.compile("^.*?\\(");
             Matcher firstBracketM = firstBracketP.matcher(functionArgs);
+            //Divides the string into two arguments and sends them to and\or depending on their matcher.
             if(firstBracketM.find()){
                 int pos = firstBracketM.end();
                 int count = 1;
@@ -75,16 +77,14 @@ public class DataQueryServiceImpl implements DataQueryService {
 
     }
 
-    public List<Item> Equal(String property, String value) {
+    public List<Item> Equal(String property, String value) throws Exception {
         List<Item> response = new ArrayList<Item>();
         if(property.equals("id")){
             String searchId = value.replaceAll("\"","");//Remove quote from string
             if (this.items.get(searchId) != null)//Check if the search id is not null
                 response.add(this.items.get(searchId));
-            else {
-                System.out.print("No item has been found");
-                return new ArrayList<Item>();
-            }
+            else
+                throw new NoDataFound(value);
         }
         if(property.equals("title")){
             String searchTitle = value.replaceAll("\"","");//Remove quote from string
@@ -95,11 +95,8 @@ public class DataQueryServiceImpl implements DataQueryService {
                     }
                 }
             }
-            else {
-                System.out.print("No item has been found");
-                return new ArrayList<Item>();
-
-            }
+            else
+                throw new NoDataFound(value);
         }
         if(property.equals("content")){
             String searchContents = value.replaceAll("\"","");//Remove quote from string
@@ -110,11 +107,8 @@ public class DataQueryServiceImpl implements DataQueryService {
                     }
                 }
             }
-            else {
-                System.out.print("No item has been found");
-                return new ArrayList<Item>();
-
-            }
+            else
+                throw new NoDataFound(value);
         }
         if(property.equals("views")){
             int searchViews = Integer.parseInt(value);//Remove quote from string
@@ -125,11 +119,8 @@ public class DataQueryServiceImpl implements DataQueryService {
                     }
                 }
             }
-            else {
-                System.out.print("No item has been found");
-                return new ArrayList<Item>();
-
-            }
+            else
+                throw new NoDataFound(value);
         }
         if(property.equals("timestamp")){
             int searchTimestamps = Integer.parseInt(value);//Remove quote from string
@@ -140,14 +131,12 @@ public class DataQueryServiceImpl implements DataQueryService {
                     }
                 }
             }
-            else {
-                System.out.print("No item has been found");
-                return new ArrayList<Item>();
-            }
+            else
+                throw new NoDataFound(value);
         }
         return response;
     }
-    public List<Item> GreaterThan(String property, String value){
+    public List<Item> GreaterThan(String property, String value) throws Exception{
         List<Item> response = new ArrayList<Item>();
         if(property.equals("views")){
             int searchViews = Integer.parseInt(value.replaceAll("\"",""));//Remove quote from string
@@ -165,13 +154,11 @@ public class DataQueryServiceImpl implements DataQueryService {
                 }
             }
         }
-        else {
-            System.out.print("Not a valid property");
-            return null;
-        }
+        else
+            throw new NoDataFound(value);
         return response;
     }
-    public List<Item> LessThan(String property, String value){
+    public List<Item> LessThan(String property, String value) throws Exception{
         List<Item> response = new ArrayList<Item>();
         if(property.equals("views")){
             int searchViews = Integer.parseInt(value.replaceAll("\"",""));//Remove quote from string
@@ -189,10 +176,8 @@ public class DataQueryServiceImpl implements DataQueryService {
                 }
             }
         }
-        else {
-            System.out.print("Not a valid property");
-            return null;
-        }
+        else
+            throw new NoDataFound(value);
         return response;
 
     }
