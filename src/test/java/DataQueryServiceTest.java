@@ -160,7 +160,7 @@ public class DataQueryServiceTest {
         dataQueryService.save(item1);
         dataQueryService.save(item2);
         dataQueryService.save(item3);
-        assertNull(dataQueryService.query("NOT(OR(OR(EQUAL(id,\"id1\"),EQUAL(id,\"id2\")),EQUAL(id,\"id3\"))))"));
+        assertTrue(dataQueryService.query("NOT(OR(OR(EQUAL(id,\"id1\"),EQUAL(id,\"id2\")),EQUAL(id,\"id3\")))").isEmpty());
     }
 
     @Test

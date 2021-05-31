@@ -17,12 +17,12 @@ public class DataQueryServiceImpl implements DataQueryService {
     public List<Item> query(String query) throws Exception{
         if(query.equals(""))
             return new ArrayList<Item>(items.values());
-        Pattern pattern = Pattern.compile("^(EQUAL|GREATER_THAN|LESS_THAN)\\((.*?)\\,(.*)\\)");
+        Pattern pattern = Pattern.compile("^(EQUAL|GREATER_THAN|LESS_THAN)\\((.*)\\,(.*)\\)");
         Matcher matcher = pattern.matcher(query);
+        //Checks if the string starts with EQUAL()\GREATER_THAN()\LESS_THAN()
         if(matcher.find()){
             String property = matcher.group(2);
             String value = matcher.group(3);
-
             if(matcher.group(1).equals("EQUAL"))
                 return Equal(property, value);
             else if(matcher.group(1).equals("GREATER_THAN"))
@@ -30,50 +30,47 @@ public class DataQueryServiceImpl implements DataQueryService {
             else if(matcher.group(1).equals("LESS_THAN"))
                 return LessThan(property, value);
             else
-                throw new QueryParseException("Invalid query33", null);
+                throw new QueryParseException("Invalid query", null);
         }
         Pattern aoPattern = Pattern.compile("^(AND|OR)\\((.*)\\)");
         Matcher aoMatcher = aoPattern.matcher(query);
-        if(aoMatcher.find()){
+        //Checks if the string starts with AND()\OR()
+        if(aoMatcher.find()) {
             String functionArgs = aoMatcher.group(2);
             Pattern firstBracketP = Pattern.compile("^.*?\\(");
             Matcher firstBracketM = firstBracketP.matcher(functionArgs);
-            //Divides the string into two arguments and sends them to and\or depending on their matcher.
-            if(firstBracketM.find()){
+            //Divides the string into two arguments and sends them to AND\OR depending on their matcher.
+            if (firstBracketM.find()) {
                 int pos = firstBracketM.end();
                 int count = 1;
-                while(pos < functionArgs.length() && count > 0){
-                    if(functionArgs.charAt(pos) == '(')
+                while (pos < functionArgs.length() && count > 0) {
+                    if (functionArgs.charAt(pos) == '(')
                         count++;
-                    else if(functionArgs.charAt(pos) == ')')
+                    else if (functionArgs.charAt(pos) == ')')
                         count--;
                     pos++;
                 }
-                if(count == 0) {
+                if (count == 0) {
                     String arg1 = functionArgs.substring(0, pos);
                     String arg2 = functionArgs.substring(pos + 1, functionArgs.length());
-
-                    if(aoMatcher.group(1).equals("AND")){
-                        return Intersection(arg1,arg2);
-                    }
-                    else if(aoMatcher.group(1).equals("OR")){
-                        return Union(arg1,arg2);
-                    }
-                    else
-                        throw new QueryParseException("Invalid query63", null);
-                }
-                else
-                    throw new QueryParseException("Invalid query66", null);
-            }
-            else
+                    if (aoMatcher.group(1).equals("AND")) {
+                        return Intersection(arg1, arg2);
+                    } else if (aoMatcher.group(1).equals("OR")) {
+                        return Union(arg1, arg2);
+                    } else
+                        throw new QueryParseException("Invalid query", null);
+                } else
+                    throw new QueryParseException("Invalid query", null);
+            } else
                 throw new QueryParseException("Invalid query", null);
         }
         Pattern notPattern = Pattern.compile("^NOT\\((.*)\\)");
         Matcher notMatcher = notPattern.matcher(query);
+        //Checks if the string starts with NOT()
         if(notMatcher.find()){
             return Complement(notMatcher.group(1));
         }
-        throw new QueryParseException("Invalid query76", null);
+        throw new QueryParseException("Invalid query", null);
 
     }
 
@@ -81,8 +78,8 @@ public class DataQueryServiceImpl implements DataQueryService {
         List<Item> response = new ArrayList<Item>();
         if(property.equals("id")){
             String searchId = value.replaceAll("\"","");//Remove quote from string
-            if (this.items.get(searchId) != null)//Check if the search id is not null
-                response.add(this.items.get(searchId));
+            if (items.get(searchId) != null)//Check if the search id is not null
+                response.add(items.get(searchId));
             else
                 throw new NoDataFound(value);
         }
@@ -184,8 +181,8 @@ public class DataQueryServiceImpl implements DataQueryService {
     public List<Item> Intersection(String a,String b) throws Exception{
 
         try {
-            List<Item> listA = query(a);
-            List<Item> listB = query(b);
+            List<Item> listA = query(a);//Sends the string in a recursion to check if there is another operator
+            List<Item> listB = query(b);//Sends the string in a recursion to check if there is another operator
             return listA.stream().filter(listB::contains).collect(Collectors.toList());
         }
         catch(Exception e) {
@@ -196,8 +193,8 @@ public class DataQueryServiceImpl implements DataQueryService {
     }
     public List<Item> Union(String a,String b) throws Exception{
         try {
-            List<Item> listA = query(a);
-            List<Item> listB = query(b);
+            List<Item> listA = query(a);//Sends the string in a recursion to check if there is another operator
+            List<Item> listB = query(b);//Sends the string in a recursion to check if there is another operator
             Set<Item> s1 = new HashSet<>(listA);
             s1.addAll(listB);
             return new ArrayList<>(s1);
@@ -208,14 +205,13 @@ public class DataQueryServiceImpl implements DataQueryService {
     }
     public List<Item> Complement(String a)throws Exception{
         try {
-            List<Item> listA = query(a);
+            List<Item> listA = query(a);//Sends the string in a recursion to check if there is another operator
             List<Item> itemValue = new ArrayList<Item>(items.values());
             itemValue.removeAll(listA);
             return itemValue;
         }
-        catch(QueryParseException e) {
-            System.out.println(e);
-            return null;
+        catch(Exception e) {
+            throw new QueryParseException("Invalid query", null);
         }
     }
 

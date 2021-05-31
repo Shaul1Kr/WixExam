@@ -59,11 +59,11 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="DataQueryServiceTest.FilterItemBaseOnComplexNORQueryString" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+    <configuration name="DataQueryServiceTest.FilterItemBaseOnComplexNORFalseQueryString2" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
       <module name="data-query-exam" />
       <option name="PACKAGE_NAME" value="" />
       <option name="MAIN_CLASS_NAME" value="DataQueryServiceTest" />
-      <option name="METHOD_NAME" value="FilterItemBaseOnComplexNORQueryString" />
+      <option name="METHOD_NAME" value="FilterItemBaseOnComplexNORFalseQueryString2" />
       <option name="TEST_OBJECT" value="method" />
       <method v="2">
         <option name="Make" enabled="true" />
@@ -92,10 +92,10 @@
     <recent_temporary>
       <list>
         <item itemvalue="JUnit.DataQueryServiceTest" />
+        <item itemvalue="JUnit.DataQueryServiceTest.FilterItemBaseOnComplexNORFalseQueryString2" />
         <item itemvalue="JUnit.DataQueryServiceTest.FilterItemBaseOnComplexNotLessThanFilter" />
         <item itemvalue="JUnit.DataQueryServiceTest.FilterItemBaseOnComplexNotGreaterThanFilter" />
         <item itemvalue="JUnit.DataQueryServiceTest.FilterItemBaseOnComplexNANDFalseQueryString" />
-        <item itemvalue="JUnit.DataQueryServiceTest.FilterItemBaseOnComplexNORQueryString" />
       </list>
     </recent_temporary>
   </component>
@@ -121,26 +121,5 @@
       </map>
     </option>
     <option name="oldMeFiltersMigrated" value="true" />
-  </component>
-  <component name="XDebuggerManager">
-    <breakpoint-manager>
-      <breakpoints>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/main/java/service/DataQueryServiceImpl.java</url>
-          <line>70</line>
-          <option name="timeStamp" value="4" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/test/java/DataQueryServiceTest.java</url>
-          <line>114</line>
-          <option name="timeStamp" value="5" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/main/java/service/DataQueryServiceImpl.java</url>
-          <line>51</line>
-          <option name="timeStamp" value="6" />
-        </line-breakpoint>
-      </breakpoints>
-    </breakpoint-manager>
   </component>
 </project>
